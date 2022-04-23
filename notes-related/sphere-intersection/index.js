@@ -334,39 +334,35 @@ function raySphereIntersection(spherePosX, spherePosY, sphereRadius, rayX, rayY,
     let dy = rayDirY;
     let R = sphereRadius;
 
-    // t = d*a +- sqrt{ (d*a)^2 - (a^2 + R^2)}
-    // t = A +- sqrt{A^2 + R^2 - a^2}
-    // t = A +- sqrt{D}
     let A = dx * ax + dy * ay;
     let D = A*A + R*R - (ax*ax + ay*ay);
 
-    if (D == 0) {
-        result.intersectionCount = 1;
-        result.t1 = A;
-
-        let r = calcRay(result.t1);
-        result.p1x = r.x;
-        result.p1y = r.y;
-        
+    if (D < 0) {
+        result.intersectionCount = 0;
     } else if (D > 0) {
         result.intersectionCount = 2;
         result.t1 = A + Math.sqrt(D);
         result.t2 = A - Math.sqrt(D);
 
-        
-        let r = calcRay(result.t1);
-        result.p1x = r.x;
-        result.p1y = r.y;
-
         if (result.t2 < 0) {
-            result.intersectionCount = 1;
-        } else {
-            r = calcRay(result.t2);
+            result.intersectionCount--;
+        }
+
+        if (result.t1 < 0) {
+            result.intersectionCount--;
+        }
+
+        if (result.intersectionCount >= 1) {
+            let r = calcRay(result.t1);
+            result.p1x = r.x;
+            result.p1y = r.y;
+        }
+        
+        if (result.intersectionCount >= 2) {
+            let r = calcRay(result.t2);
             result.p2x = r.x;
             result.p2y = r.y;
         }
-    } else {
-        result.intersectionCount = 0;
     }
    
     return result;
