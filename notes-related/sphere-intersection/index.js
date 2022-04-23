@@ -128,8 +128,8 @@ function drawIntersections() {
 }
 
 function drawGraph() {
-    let a0 = -Math.PI/2;
-    let af = Math.PI/2;
+    let a0 =-Math.PI;
+    let af = Math.PI;
 
     // let im = new ImageData(canvas.width, 200);
     // for (i = 0; i < im.data.length;i++) im.data[i] = 20;
