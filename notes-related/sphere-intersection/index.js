@@ -19,6 +19,7 @@ const state = {
     draggingRayPos: false,
     draggingRayDir: false,
     dragLock: false,
+    normalLen: 40,
 
     rayX: 400,
     rayY: 300,
@@ -44,6 +45,12 @@ const state = {
     p1y: 0,
     p2x: 0,
     p2y: 0,
+    n1x: 0,
+    n1y: 0,
+    n2x: 0,
+    n2y: 0,
+
+    drawNormals: true,
 };
 
 let canvas = document.createElement("canvas");
@@ -66,6 +73,7 @@ infoDiv.innerHTML =
 <p>Ray Origin = <span id="ray-origin">0</span></p>
 <p>Angle = <span id=ray-angle>0</span></p>
 <input id="draw-graph" type="checkbox">Draw Graph</input>
+<input id="draw-normals" type="checkbox">Draw Normals</input>
 `;
 
 let infoSpherePos = document.getElementById("sphere-pos");
@@ -73,9 +81,14 @@ let infoSphereRadius = document.getElementById("sphere-radius");
 let infoRayOrigin = document.getElementById("ray-origin");
 let infoRayAngle = document.getElementById("ray-angle");
 let infoDrawGraphInput = document.getElementById("draw-graph");
+let infoDrawNormals = document.getElementById("draw-normals");
 
 infoDrawGraphInput.addEventListener("change", e => {
     state.drawGraph = e.target.checked;
+});
+
+infoDrawNormals.addEventListener("change", e => {
+    state.drawNormals = e.target.checked;
 });
 
 function drawSphere() {
@@ -119,11 +132,27 @@ function drawIntersections() {
     ctx.arc(state.p1x, state.p1y, 4, 0, 2*Math.PI);
     ctx.fill();
 
+    if (state.drawNormals) {
+        ctx.strokeStyle = colors.t1;
+        ctx.beginPath();
+        ctx.moveTo(state.p1x, state.p1y);
+        ctx.lineTo(state.p1x + state.normalLen*state.n1x, state.p1y + state.normalLen*state.n1y);
+        ctx.stroke();
+    }
+
     if (state.intersectionCount == 2) {
         ctx.fillStyle = colors.t2;
         ctx.beginPath();
         ctx.arc(state.p2x, state.p2y, 4, 0, 2*Math.PI);
         ctx.fill();
+
+        if (state.drawNormals) {
+            ctx.strokeStyle = colors.t2;
+            ctx.beginPath();
+            ctx.moveTo(state.p2x, state.p2y);
+            ctx.lineTo(state.p2x + state.normalLen*state.n2x, state.p2y + state.normalLen*state.n2y);
+            ctx.stroke();
+        }
     }
 }
 
@@ -326,6 +355,10 @@ function raySphereIntersection(spherePosX, spherePosY, sphereRadius, rayX, rayY,
         p1y: 0,
         p2x: 0,
         p2y: 0,
+        n1x: 0,
+        n1y: 0,
+        n2x: 0,
+        n2y: 0,
     }
     
     let ax = spherePosX - rayX;
@@ -344,6 +377,8 @@ function raySphereIntersection(spherePosX, spherePosY, sphereRadius, rayX, rayY,
         result.t1 = A + Math.sqrt(D);
         result.t2 = A - Math.sqrt(D);
 
+        console.log(A, D, result.t1, result.t2);
+
         if (result.t2 < 0) {
             result.intersectionCount--;
         }
@@ -356,12 +391,18 @@ function raySphereIntersection(spherePosX, spherePosY, sphereRadius, rayX, rayY,
             let r = calcRay(result.t1);
             result.p1x = r.x;
             result.p1y = r.y;
+
+            result.n1x = -(r.x - spherePosX) / R;
+            result.n1y = -(r.y - spherePosY) / R;
         }
         
         if (result.intersectionCount >= 2) {
             let r = calcRay(result.t2);
             result.p2x = r.x;
             result.p2y = r.y;
+            
+            result.n2x = (r.x - spherePosX) / R;
+            result.n2y = (r.y - spherePosY) / R;
         }
     }
    
@@ -378,6 +419,10 @@ function calcRaySphereIntersection() {
     state.p1y = result.p1y;
     state.p2x = result.p2x;
     state.p2y = result.p2y;
+    state.n1x = result.n1x;
+    state.n2x = result.n2x;
+    state.n1y = result.n1y;
+    state.n2y = result.n2y;
 }
 
 function frame() {
@@ -451,6 +496,7 @@ canvas.addEventListener("mouseup", e => {
     state.dragLock = false;
 });
 
-requestAnimationFrame(frame);
+infoDrawNormals.checked = state.drawNormals;
 
+requestAnimationFrame(frame);
 
