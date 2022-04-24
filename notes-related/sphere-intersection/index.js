@@ -9,8 +9,8 @@ const colors = {
 }
 
 const state = {
-    spherePosX: 200,
-    spherePosY: 200,
+    spherePosX: 430,
+    spherePosY: 230,
     sphereRadius: 100,
     sphereMinRadius: 20,
     sphereHandleRadius: 10,
@@ -21,8 +21,8 @@ const state = {
     dragLock: false,
     normalLen: 40,
 
-    rayX: 400,
-    rayY: 300,
+    rayX: 77,
+    rayY: 510,
     rayRadius: 8,
 
     rayDirX: 1,
