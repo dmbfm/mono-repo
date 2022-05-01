@@ -72,6 +72,8 @@ infoDiv.innerHTML =
 <p>Sphere Radius = <span id="sphere-radius">0</span></p>
 <p>Ray Origin = <span id="ray-origin">0</span></p>
 <p>Angle = <span id=ray-angle>0</span></p>
+<p>t1 = <span id=t1>0</span></p>
+<p>t2 = <span id=t2>0</span></p>
 <input id="draw-graph" type="checkbox">Draw Graph</input>
 <input id="draw-normals" type="checkbox">Draw Normals</input>
 `;
@@ -82,6 +84,8 @@ let infoRayOrigin = document.getElementById("ray-origin");
 let infoRayAngle = document.getElementById("ray-angle");
 let infoDrawGraphInput = document.getElementById("draw-graph");
 let infoDrawNormals = document.getElementById("draw-normals");
+let infoT1 = document.getElementById("t1");
+let infoT2 = document.getElementById("t2");
 
 infoDrawGraphInput.addEventListener("change", e => {
     state.drawGraph = e.target.checked;
@@ -320,6 +324,8 @@ function updateInfo() {
     infoSphereRadius.textContent = `${state.sphereRadius}`;
     infoRayOrigin.textContent = `(${state.rayX}, ${state.rayY})`;
     infoRayAngle.textContent = `${state.angle * 180 / Math.PI}`;
+    infoT1.textContent = `${state.t1}`;
+    infoT2.textContent = `${state.t2}`;
 }
 
 function calc() {
@@ -461,9 +467,6 @@ function isMouseOverLineSegment(ax, ay, bx, by, d = 4) {
     let px = ax + abDirX * dot;
     let py = ay + abDirY * dot;
 
-    // ctx.beginPath();
-    // ctx.arc(px, py, 20, 0, 2*Math.PI);
-    // ctx.fill();
 
     let vx = state.mouseX - px;
     let vy = state.mouseY - py;
